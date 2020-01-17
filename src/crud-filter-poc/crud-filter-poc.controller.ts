@@ -1,7 +1,7 @@
 import { Controller } from '@nestjs/common';
 import Widget from './widget.entity';
 import { CrudController } from '@nestjsx/crud/lib/interfaces/crud-controller.interface';
-import { Crud, CrudRequest, Override, ParsedRequest } from '@nestjsx/crud';
+import { Crud, CrudAuth, CrudRequest, Override, ParsedRequest } from '@nestjsx/crud';
 import WidgetService from './widget.service';
 
 @Crud({
@@ -20,6 +20,12 @@ import WidgetService from './widget.service';
     },
   },
 })
+@CrudAuth({
+  property: 'user',
+  filter: () => ({
+    remoteId: 10,
+  }),
+})
 @Controller('crud')
 export class CrudFilterPocController implements CrudController<Widget> {
   constructor(public readonly service: WidgetService) {
@@ -33,11 +39,11 @@ export class CrudFilterPocController implements CrudController<Widget> {
   async getMany(@ParsedRequest() req: CrudRequest) {
     // Simulating user only having access to remoteId == 10
 
-    req.parsed.filter.push({
-      field: 'remoteId',
-      operator: '$eq',
-      value: 10,
-    });
+    // req.parsed.filter.push({
+    //   field: 'remoteId',
+    //   operator: '$eq',
+    //   value: 10,
+    // });
 
     // tslint:disable-next-line:no-console
     console.debug('ParsedRequest', JSON.stringify(req));

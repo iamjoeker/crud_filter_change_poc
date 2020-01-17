@@ -25,6 +25,12 @@ describe('CrudFilterPocController (e2e)', () => {
       name: 'Entity 3',
       remoteId: 30,
     },
+
+    {
+      id: 4,
+      name: 'Entity 4',
+      remoteId: 10,
+    },
   ];
 
   beforeEach(async () => {
@@ -62,14 +68,13 @@ describe('CrudFilterPocController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/crud')
       .expect(200)
-      .expect([ fixtures[0] ]);
+      .expect([ fixtures[0], fixtures[3] ]);
   });
 
-  it('/crud/1 (GET)', () => {
+  it('/crud/3 (GET) 404', () => {
     return request(app.getHttpServer())
       .get('/crud/3')
-      .expect(200)
-      .expect(fixtures[2]);
+      .expect(404);
   });
 
   it('/crud?filter=remoteId||$eq||10 returns fixtures[0]', () => {
@@ -78,6 +83,6 @@ describe('CrudFilterPocController (e2e)', () => {
     return request(server)
       .get('/crud?filter=remoteId||$eq||10')
       .expect(200)
-      .expect([ fixtures[0] ]);
+      .expect([ fixtures[0], fixtures[3] ]);
   });
 });

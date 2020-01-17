@@ -44,4 +44,20 @@ export class CrudFilterPocController implements CrudController<Widget> {
 
     return await this.base.getManyBase(req);
   }
+
+  @Override()
+  async getOne(@ParsedRequest() req: CrudRequest) {
+    // Simulating user only having access to remoteId == 10
+
+    req.parsed.filter.push({
+      field: 'remoteId',
+      operator: '$eq',
+      value: 10,
+    });
+
+    // tslint:disable-next-line:no-console
+    console.debug('ParsedRequest', JSON.stringify(req));
+
+    return await this.base.getOneBase(req);
+  }
 }

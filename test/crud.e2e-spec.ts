@@ -38,6 +38,8 @@ describe('CrudFilterPocController (e2e)', () => {
           entities: [
             './src/**/*.entity{.ts,.js}',
           ],
+          logger: 'advanced-console',
+          logging: 'all',
         }),
         CrudFilterPocModule,
         TypeOrmModule.forFeature([ Widget ]),
@@ -51,11 +53,30 @@ describe('CrudFilterPocController (e2e)', () => {
     await repo.insert(fixtures);
   });
 
+  afterEach(async () => {
+    // httpServer.close();
+    await app.close();
+  });
+
   it('/crud (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/crud')
+      .expect(200)
+      .expect([ fixtures[0] ]);
+  });
+
+  it('/crud/1 (GET)', () => {
+    return request(app.getHttpServer())
+      .get('/crud/3')
+      .expect(200)
+      .expect(fixtures[2]);
+  });
+
+  it('/crud?filter=remoteId||$eq||10 returns fixtures[0]', () => {
     const server = app.getHttpServer();
 
     return request(server)
-      .get('/crud')
+      .get('/crud?filter=remoteId||$eq||10')
       .expect(200)
       .expect([ fixtures[0] ]);
   });

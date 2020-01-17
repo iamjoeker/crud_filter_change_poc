@@ -35,9 +35,12 @@ export class CrudFilterPocController implements CrudController<Widget> {
 
     req.parsed.filter.push({
       field: 'remoteId',
-      operator: 'eq',
+      operator: '$eq',
       value: 10,
     });
+
+    // tslint:disable-next-line:no-console
+    console.debug('ParsedRequest', JSON.stringify(req));
 
     return await this.base.getManyBase(req);
   }

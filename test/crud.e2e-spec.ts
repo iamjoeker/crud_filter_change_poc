@@ -33,12 +33,12 @@ describe('CrudFilterPocController (e2e)', () => {
     },
   ];
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         TypeOrmModule.forRoot({
           type: 'sqlite',
-          database: './mydb_test.sqlite',
+          database: ':memory:',
           synchronize: true,
           dropSchema: true,
           entities: [
@@ -59,28 +59,26 @@ describe('CrudFilterPocController (e2e)', () => {
     await repo.insert(fixtures);
   });
 
-  afterEach(async () => {
+  afterAll(async () => {
     // httpServer.close();
     await app.close();
   });
 
-  it('/crud (GET)', () => {
+  it('/crud (GET)', async () => {
     return request(app.getHttpServer())
       .get('/crud')
       .expect(200)
       .expect([ fixtures[0], fixtures[3] ]);
   });
 
-  it('/crud/3 (GET) 404', () => {
+  it('/crud/3 (GET) 404', async () => {
     return request(app.getHttpServer())
       .get('/crud/3')
       .expect(404);
   });
 
-  it('/crud?filter=remoteId||$eq||10 returns fixtures[0]', () => {
-    const server = app.getHttpServer();
-
-    return request(server)
+  it('/crud?filter=remoteId||$eq||10 returns fixtures[0]', async () => {
+    return request(app.getHttpServer())
       .get('/crud?filter=remoteId||$eq||10')
       .expect(200)
       .expect([ fixtures[0], fixtures[3] ]);
